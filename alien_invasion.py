@@ -16,6 +16,17 @@ class Ship:
         # 每艘新飞船都放在屏幕底部中央
         self.rect.midbottom = self.screen_rect.midbottom
 
+        # 添加移动标志
+        self.moving_right = False
+        self.moving_left = False
+
+    def update(self):
+        """根据移动标志调整飞船位置"""
+        if self.moving_right and self.rect.right < self.screen_rect.right:
+            self.rect.x += 1
+        if self.moving_left and self.rect.left > 0:
+            self.rect.x -= 1
+
     def blitme(self):
         """在指定位置绘制飞船"""
         self.screen.blit(self.image, self.rect)
@@ -38,6 +49,19 @@ class AlienInvasion:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RIGHT:
+                        self.ship.moving_right = True
+                    elif event.key == pygame.K_LEFT:
+                        self.ship.moving_left = True
+                elif event.type == pygame.KEYUP:
+                    if event.key == pygame.K_RIGHT:
+                        self.ship.moving_right = False
+                    elif event.key == pygame.K_LEFT:
+                        self.ship.moving_left = False
+
+            # 更新飞船位置
+            self.ship.update()
 
             # 每次循环时重绘屏幕
             self.screen.fill((230, 230, 230))   # 灰色背景
